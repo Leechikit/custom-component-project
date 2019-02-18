@@ -3,10 +3,10 @@ export default {
     controlkey: "FormTextBox",
     "Type": 14,
     "Visible": true,
-    "Editable": false,
+    "Editable": true,
     "Required": false,
     "Printable": true,
-    "Value": "20190213",
+    "Value": "",
     "DisplayName": "单行文本",
     "DataDictItemValue": null,
     "ComputationRuleFields": null,
@@ -14,17 +14,19 @@ export default {
     "DisplayRuleFields": null,
     "DisplayRule": null,
     "IsUser": null,
-    "unitSelectionRange": ""
+    "unitSelectionRange": "",
+    "displayname": "单行文本",
   }, {
     isCustom: true,
     controlkey: 'FormTest',
     "Type": 14,
     "Visible": true,
-    "Editable": false,
+    "Editable": true,
     "Required": false,
     "Printable": true,
     "Value": null,
     "DisplayName": "单行文本",
+    "displayname": "金额",
     "DataDictItemValue": null,
     "ComputationRuleFields": [
       "F0000002",
@@ -36,22 +38,52 @@ export default {
     "IsUser": null,
     "unitSelectionRange": "",
     "datafield": "F0000100",
-    "template": "<div class=\"test-1001\"><input type=\"text\" v-model=\"currentValue\" @blur=\"onBlur()\"></div>",
+    "template": `
+      <div
+        class="test-1001"
+        :class="['mint-cell mint-field', {'is-required': config.Required}]">
+        <div class="mint-cell-wrapper">
+          <div class="mint-cell-title">
+            <div class="mint-cell-text">{{config.displayname}}</div>
+          </div>
+          <div :class="['mint-cell-value', {'is-readonly': !config.Editable}]">
+          <input v-model="currentValue" ref="control" @blur="onBlur()" @focus="onFocus()" :placeholder="config.placeholder || '请输入金额'"/>
+          </div>
+        </div>
+      </div>
+    `,
     "js": `{
       mounted () {
         this.$emit('getValue', this.getValue)
       },
       methods:{
-        onBlur() {
+        onBlur () {
           if (this.currentValue !== null && this.currentValue !== void 0) {
             this.setValue(this.currentValue)
           }
         },
-        setValue (event) {
-          this.$emit('input', event)
+        onFocus () {
+          let $input = this.$refs.control
+          if ($input && this.currentValue !== null && this.currentValue !== void 0) {
+            $input.value = this.currentValue
+          }
+        },
+        setValue (value) {
+          let formatedNumber = '￥' + this.currentValue
+          this.$nextTick(() => {
+            let $input = this.$refs.control
+            if ($input) {
+              $input.value = formatedNumber
+              this.$emit('input', this.currentValue)
+            }
+          })
         }
       }
     }`,
-    "css": ".test-1001{color:red}"
+    "css": `
+      input{
+        border: none;
+      }
+    `
   }]
 }

@@ -55,10 +55,8 @@ export default {
     registerComponent () {
       let options = eval('(' + this.config.js + ')')
       let combine = Object.assign({}, base, options)
-      combine.methods = Object.assign({}, base.methods, options.methods)
-      combine.watch = Object.assign({}, base.watch, options.watch)
-      combine.props = Object.assign({}, base.props, options.props)
       combine.template = this.config.template
+      combine.mixins = [base]
       Vue.component(this.config.controlkey, (resolve, reject) => {
         resolve(combine)
       })

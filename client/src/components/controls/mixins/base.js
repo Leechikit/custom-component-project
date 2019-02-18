@@ -1,7 +1,10 @@
 export default {
   props: {
     placeholder: String,
-    value: [String, Number, Array, Date, Object]
+    value: [String, Number, Array, Date, Object],
+    config: {
+      type: Object
+    }
   },
   data () {
     return {

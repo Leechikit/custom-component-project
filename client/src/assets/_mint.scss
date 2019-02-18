@@ -1,0 +1,86 @@
+/**
+Cell
+ */
+.mint-cell-wrapper {
+  padding-left: 0;
+  font-size: inherit;
+}
+.mint-field-core {
+  padding: 0;
+}
+.mint-field .mint-cell-title {
+  padding-left: 10px;
+  color: #666666;
+  width: 130px;
+}
+.mint-field .mint-cell-value {
+  min-height: 100%;
+}
+.mint-field.is-textarea .mint-cell-title {
+  padding: 17px 0 17px 10px;
+  align-self: flex-start;
+}
+.mint-field.is-textarea .mint-cell-value {
+  padding: 14px 0;
+  margin-left: -5px;
+
+  textarea {
+    padding: 0;
+  }
+}
+.mint-field.is-required .mint-cell-title .mint-cell-text:after {
+  content: '*';
+  color: #ef4f4f;
+  margin-left: 2px;
+}
+.mint-cell-value.is-readonly {
+  position: relative;
+  &:after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/**
+Popup
+ */
+.mint-popup-bottom {
+  width: 100%;
+}
+.picker-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px;
+
+  a {
+    padding: 0 5px;
+    cursor: pointer;
+  }
+}
+/**
+Header
+ */
+.form-header {
+  .mint-cell-text {
+    display: block;
+    padding: 20px 10px;
+    font-size: 1.3em;
+    font-weight: bold;
+  }
+}
+
+/**
+Description
+ */
+.form-describle {
+  .mint-cell-text {
+    display: block;
+    padding: 0 10px;
+    color: #666666;
+  }
+}

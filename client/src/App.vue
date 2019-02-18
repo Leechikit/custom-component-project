@@ -1,10 +1,5 @@
 <template>
   <div id="app">
-    <img
-      alt="Vue logo"
-      src="./assets/logo.png"
-    >
-    <HelloWorld msg="Welcome to Your Vue.js App" />
     <form-control
       v-for="control in list"
       :key="control.datafield"
@@ -20,14 +15,12 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 import FormControl from '@/components/controls'
 import API_LIST from '@/api/list.js'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld,
     FormControl
   },
   data () {
@@ -49,12 +42,5 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
