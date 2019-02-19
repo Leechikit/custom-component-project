@@ -6,7 +6,6 @@
     :field="field"
     :config="config"
     @getValue="getValue"
-    @setValue="setValue"
     @input="handleInput"
   ></component>
 </template>
@@ -46,16 +45,13 @@ export default {
     getValue (event) {
       this.$emit('getValue', event)
     },
-    setValue (event) {
-      this.$emit('setValue', event)
-    },
     handleInput (event) {
       this.$emit('input', event)
     },
     registerComponent () {
-      let options = eval('(' + this.config.js + ')')
+      let options = eval('(' + this.config.customDatas.javascript + ')')
       let combine = Object.assign({}, base, options)
-      combine.template = this.config.template
+      combine.template = this.config.customDatas.template
       combine.mixins = [base]
       Vue.component(this.config.controlkey, (resolve, reject) => {
         resolve(combine)
@@ -63,7 +59,7 @@ export default {
     },
     loadStyle () {
       const style = document.createElement('style')
-      style.innerHTML = this.config.css
+      style.innerHTML = this.config.customDatas.style
       document.querySelector('head').appendChild(style)
     }
   }
