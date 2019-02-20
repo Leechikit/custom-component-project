@@ -1,4 +1,11 @@
 export default {
+  RuntimeContent: `
+    <div class="test123">123</div>
+    <FormTextBox></FormTextBox>
+    <FormMoney></FormMoney>
+  `,
+  javascript:"console.log('123')",
+  style:".test123{color:red}",
   list: [{
     controlkey: "FormTextBox",
     "datafield": "F000001",
