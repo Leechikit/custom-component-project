@@ -49,7 +49,7 @@ export default {
     "customDatas": {
       "template": `
         <div
-          class="test-1001"
+          class="FormMoney"
           :class="['mint-cell mint-field', {'is-required': config.Required}]">
           <div class="mint-cell-wrapper">
             <div class="mint-cell-title">

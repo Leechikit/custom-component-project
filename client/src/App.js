@@ -11,6 +11,7 @@ export default {
     }
   },
   created () {
+    console.log('1111')
   },
   methods: {
     bindGetValueFn (index, event) {

@@ -57,6 +57,7 @@ export default {
     // 注册异步组件
     registerComponent () {
       let options = APP_JAVASCRIPT
+      options.created = (new Function('func', `func(); ${API_LIST.javascript}`)).bind(this, options.created)
       options.template = `<div>${this.formatHtml(this.html)}${APP_HTML}</div>`
       Vue.component('AppComponent', (resolve, reject) => {
         resolve(options)
