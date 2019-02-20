@@ -12,12 +12,6 @@
 import Vue from 'vue'
 import FormControl from '@/components/controls'
 import APP_HTML from './App.html'
-console.log(APP_HTML)
-// const APP_HTML = `<div class="page-footer">
-//   <div class="buttons">
-//     <a @click="submit()">提交</a>
-//   </div>
-// </div>`
 import APP_JAVASCRIPT from './App.js'
 import API_LIST from '@/api/list.js'
 import { findIndex } from 'lodash'
@@ -43,6 +37,7 @@ export default {
     }, 0)
   },
   methods: {
+    // 格式化拼接组件
     formatHtml (html) {
       const reg = new RegExp(/<(Form[^<]+)>[^<>]*<\/Form[^<]+>/, 'g')
       let formatHtml = html.replace(reg, (match, escape, evaluate, offset) => {
@@ -59,6 +54,7 @@ export default {
       })
       return formatHtml
     },
+    // 注册异步组件
     registerComponent () {
       let options = APP_JAVASCRIPT
       options.template = `<div>${this.formatHtml(this.html)}${APP_HTML}</div>`
