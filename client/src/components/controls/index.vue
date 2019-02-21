@@ -50,11 +50,10 @@ export default {
     },
     registerComponent () {
       let options = eval('(' + this.config.customDatas.javascript + ')')
-      let combine = Object.assign({}, base, options)
-      combine.template = this.config.customDatas.template
-      combine.mixins = [base]
+      options.template = this.config.customDatas.template
+      options.mixins = [base]
       Vue.component(this.config.controlkey, (resolve, reject) => {
-        resolve(combine)
+        resolve(options)
       })
     },
     loadStyle () {
