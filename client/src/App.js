@@ -10,7 +10,7 @@ export default {
       list: this.plist
     }
   },
-  created () {
+  mounted () {
     console.log('1111')
   },
   methods: {

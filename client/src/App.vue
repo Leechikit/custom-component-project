@@ -32,6 +32,7 @@ export default {
     setTimeout(() => {
       this.list = API_LIST.list
       this.html = API_LIST.RuntimeContent
+      this.loadStyle()
       this.registerComponent()
       this.isReady = true
     }, 0)
@@ -57,11 +58,21 @@ export default {
     // 注册异步组件
     registerComponent () {
       let options = APP_JAVASCRIPT
-      options.created = (new Function('func', `func(); ${API_LIST.javascript}`)).bind(this, options.created)
-      options.template = `<div>${this.formatHtml(this.html)}${APP_HTML}</div>`
+      options.mounted = (new Function('func', `func(); ${API_LIST.javascript}`)).bind(this, options.mounted || function () { })
+      options.template = `
+      <div>
+        ${this.formatHtml(this.html)}
+        ${APP_HTML}
+      </div>`
       Vue.component('AppComponent', (resolve, reject) => {
         resolve(options)
       })
+    },
+    // 加载组件样式
+    loadStyle () {
+      const style = document.createElement('style')
+      style.innerHTML = API_LIST.style
+      document.querySelector('head').appendChild(style)
     }
   },
 }

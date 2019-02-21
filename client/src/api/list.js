@@ -1,11 +1,18 @@
 export default {
   RuntimeContent: `
-    <div class="test123">123</div>
+    <div class="banner">这是一个测试</div>
     <FormTextBox></FormTextBox>
     <FormMoney></FormMoney>
   `,
   javascript:"console.log('123')",
-  style:".test123{color:red}",
+  style:`
+    .banner{
+      background: #3396fb;
+      color: white;
+      padding: 30px 20px 40px 20px;
+      font-size: 30px;
+    }
+  `,
   list: [{
     controlkey: "FormTextBox",
     "datafield": "F000001",
