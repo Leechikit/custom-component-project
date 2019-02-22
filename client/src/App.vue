@@ -15,6 +15,7 @@ import APP_HTML from './App.html'
 import APP_JAVASCRIPT from './App.js'
 import API_LIST from '@/api/list.js'
 import { findIndex } from 'lodash'
+import { registerAsyncComponent, loadStyle } from '@/helper/custom-helper.js'
 
 export default {
   name: 'app',
@@ -57,22 +58,28 @@ export default {
     },
     // 注册异步组件
     registerComponent () {
+      let base = {
+        mounted() {
+          (new Function(API_LIST.javascript))()
+        }
+      }
       let options = APP_JAVASCRIPT
-      options.mounted = (new Function('func', `func(); ${API_LIST.javascript}`)).bind(this, options.mounted || function () { })
       options.template = `
       <div>
         ${this.formatHtml(this.html)}
         ${APP_HTML}
       </div>`
-      Vue.component('AppComponent', (resolve, reject) => {
-        resolve(options)
+      registerAsyncComponent({
+        name: 'AppComponent',
+        base,
+        mixins: options
       })
     },
     // 加载组件样式
     loadStyle () {
-      const style = document.createElement('style')
-      style.innerHTML = API_LIST.style
-      document.querySelector('head').appendChild(style)
+      loadStyle({
+        style: API_LIST.style
+      })
     }
   },
 }

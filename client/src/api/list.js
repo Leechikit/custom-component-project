@@ -100,7 +100,7 @@ export default {
         }
       }`,
       "style": `
-        input{
+        .FormMoney input{
           border: none;
         }
       `

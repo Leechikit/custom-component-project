@@ -11,7 +11,9 @@
 </template>
 <script>
 import Vue from 'vue'
-import base from './mixins/base'
+import mixins from './mixins/base'
+import { registerAsyncComponent, loadStyle } from '@/helper/custom-helper.js'
+
 let controls = require.context('./', true, /form-.*\.vue$/)
 let components = {}
 controls.keys().forEach(key => {
@@ -49,17 +51,24 @@ export default {
       this.$emit('input', event)
     },
     registerComponent () {
-      let options = eval('(' + this.config.customDatas.javascript + ')')
-      options.template = this.config.customDatas.template
-      options.mixins = [base]
-      Vue.component(this.config.controlkey, (resolve, reject) => {
-        resolve(options)
+      // let options = eval('(' + this.config.customDatas.javascript + ')')
+      let base = eval('(' + this.config.customDatas.javascript + ')')
+      base.template = this.config.customDatas.template
+      registerAsyncComponent({
+        name: this.config.controlkey,
+        base,
+        mixins
       })
+      // options.mixins = [base]
+      // Vue.component(this.config.controlkey, (resolve, reject) => {
+      //   resolve(options)
+      // })
     },
     loadStyle () {
-      const style = document.createElement('style')
-      style.innerHTML = this.config.customDatas.style
-      document.querySelector('head').appendChild(style)
+      loadStyle({
+        name: this.config.controlkey,
+        style: this.config.customDatas.style
+      })
     }
   }
 }
