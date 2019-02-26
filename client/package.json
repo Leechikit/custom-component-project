@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "mint-ui": "^2.2.13",
+    "monaco-editor": "^0.15.6",
     "vue": "^2.5.22",
     "vue-router": "^3.0.2"
   },
@@ -20,6 +21,7 @@
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "html-loader": "^0.5.5",
+    "monaco-editor-webpack-plugin": "^1.7.0",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.21"
