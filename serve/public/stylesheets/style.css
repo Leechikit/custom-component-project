@@ -1,3 +1,8 @@
+html,body {
+  height: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -5,4 +10,22 @@ body {
 
 a {
   color: #00B7FF;
+}
+.container {
+  display: flex;
+  height: 100%;
+}
+.sidebar {
+  width: 120px;
+  border-right: 1px solid #999;
+}
+.sidebar .button {
+  width: 100px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  color: #fff;
+  background-color: #3396fb;
+  border-radius: 3px;
+  cursor: pointer;
 }
