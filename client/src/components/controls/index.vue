@@ -51,18 +51,13 @@ export default {
       this.$emit('input', event)
     },
     registerComponent () {
-      // let options = eval('(' + this.config.customDatas.javascript + ')')
-      let base = eval('(' + this.config.customDatas.javascript + ')')
+      let base = (new Function(`${this.config.customDatas.javascript} return func()`))()
       base.template = this.config.customDatas.template
       registerAsyncComponent({
         name: this.config.controlkey,
         base,
         mixins
       })
-      // options.mixins = [base]
-      // Vue.component(this.config.controlkey, (resolve, reject) => {
-      //   resolve(options)
-      // })
     },
     loadStyle () {
       loadStyle({

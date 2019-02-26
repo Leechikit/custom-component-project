@@ -68,36 +68,43 @@ export default {
           </div>
         </div>
       `,
-      "javascript": `{
-        mounted () {
-          if(this.currentValue) {
-            this.setValue(this.currentValue)
-          }
-          this.$emit('getValue', this.getValue)
-        },
-        methods:{
-          onBlur () {
-            if (this.currentValue !== null && this.currentValue !== void 0) {
-              this.setValue(this.currentValue)
+      "javascript": `
+      'use strict';
+      function func() {
+        return {
+          mounted: function mounted() {
+            if (this.currentValue) {
+              this.setValue(this.currentValue);
             }
+            this.$emit('getValue', this.getValue);
           },
-          onFocus () {
-            let $input = this.$refs.control
-            if ($input && this.currentValue !== null && this.currentValue !== void 0) {
-              $input.value = this.currentValue
-            }
-          },
-          setValue (value) {
-            let formatedNumber = '￥' + this.currentValue
-            this.$nextTick(() => {
-              let $input = this.$refs.control
-              if ($input) {
-                $input.value = formatedNumber
-                this.$emit('input', this.currentValue)
+      
+          methods: {
+            onBlur: function onBlur() {
+              if (this.currentValue !== null && this.currentValue !== void 0) {
+                this.setValue(this.currentValue);
               }
-            })
+            },
+            onFocus: function onFocus() {
+              var $input = this.$refs.control;
+              if ($input && this.currentValue !== null && this.currentValue !== void 0) {
+                $input.value = this.currentValue;
+              }
+            },
+            setValue: function setValue(value) {
+              var _this = this;
+      
+              var formatedNumber = '￥' + this.currentValue;
+              this.$nextTick(function () {
+                var $input = _this.$refs.control;
+                if ($input) {
+                  $input.value = formatedNumber;
+                  _this.$emit('input', _this.currentValue);
+                }
+              });
+            }
           }
-        }
+        };
       }`,
       "style": `
         .FormMoney input{
