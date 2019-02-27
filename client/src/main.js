@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
-import Mint from 'mint-ui'
+import ElementUI from 'element-ui';
 import router from './router/index'
-import 'mint-ui/lib/style.css'
+import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/main.scss'
 
 Vue.config.productionTip = false
-Vue.use(Mint)
+Vue.use(ElementUI)
 new Vue({
   router,
   render: h => h(App),
