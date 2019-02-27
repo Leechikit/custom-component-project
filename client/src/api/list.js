@@ -1,3 +1,5 @@
+import { fetch } from './index'
+
 export default {
   RuntimeContent: `
     <div class="banner">这是一个测试</div>

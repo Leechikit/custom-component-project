@@ -9,7 +9,7 @@
         type="primary"
         size="small"
         @click="submit()"
-      >提交</el-button>
+      >保存</el-button>
     </div>
     <div ref="container"></div>
   </div>
@@ -69,10 +69,17 @@ export default {
         theme: this.theme,
         editorOptions: this.editorOptions,
       })
+      //编辑器内容changge事件
+      this.monacoEditor.onDidChangeModelContent(event => {
+        this.codesCopy = this.monacoEditor.getValue();
+      });
       //编辑器随窗口自适应
-      window.addEventListener('resize', function () {
+      window.addEventListener('resize', () => {
         this.initEditor();
       })
+    },
+    setValue (value) {
+      this.monacoEditor.setValue(value)
     },
     submit () {
       this.$emit('submit', this.monacoEditor.getValue())
