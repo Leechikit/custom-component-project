@@ -53,7 +53,7 @@ export default {
         autoIndent: true, //自动布局
         //quickSuggestionsDelay: 500,   //代码提示延时
       },
-      theme: "vs-dark", //vs, hc-black, or vs-dark
+      theme: "vs", //vs, hc-black, or vs-dark
       codesCopy: null, //内容备份
     }
   },

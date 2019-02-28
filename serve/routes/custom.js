@@ -218,7 +218,7 @@ router.post('/save', async (ctx, next) => {
       const obj = babel.transform(codes, babelConfig)
       result.code = obj.code
     } else if(type === 'css'){
-      options.css = codes
+      options.style = codes
       result.code = codes
     } else if(type === 'html'){
       options.html = codes

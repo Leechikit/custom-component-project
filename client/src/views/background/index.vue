@@ -3,14 +3,16 @@
     <div class="sidebar">
       <el-button
         type="primary"
-        @click="changeCodes(appCodes)"
+        :disabled = "controlkey === 'app'"
+        @click="changeCodes(appCodes,'app')"
       >表单设置</el-button>
       <p class="title">自定义控件</p>
       <el-button
         type="primary"
         v-for="(control, $index) in controlsCodes"
         :key="$index"
-        @click="changeCodes(control)"
+        :disabled = "controlkey === control.controlkey"
+        @click="changeCodes(control,control.controlkey)"
       >{{control.displayname}}</el-button>
     </div>
     <div class="content">
@@ -72,9 +74,9 @@ export default {
       this.appCodes = codes.app
       this.controlsCodes = codes.controls
     },
-    changeCodes (obj) {
+    changeCodes (obj, controlkey) {
       this.getDatas()
-      this.controlkey = obj.controlkey
+      this.controlkey = controlkey
       this.$refs.html.setValue(obj.html)
       this.$refs.css.setValue(obj.style)
       this.$refs.javascript.setValue(obj.javascript)
@@ -92,7 +94,7 @@ export default {
       const result = await API_CODE.save({
         type: 'css',
         codes: value,
-        controlkey: this.controlkey
+        controlkey: this.controlkey === 'app' ? null : this.controlkey
       })
       console.log(result)
     },
