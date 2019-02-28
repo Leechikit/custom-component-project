@@ -10,7 +10,6 @@
 
 <script>
 import Vue from 'vue'
-import FormControl from '@/components/controls'
 import APP_HTML from './index.html'
 import APP_JAVASCRIPT from './index.js'
 import API_LIST from '@/api/list.js'
@@ -19,26 +18,28 @@ import { registerAsyncComponent, loadStyle } from '@/helper/custom-helper.js'
 
 export default {
   name: 'app',
-  components: {
-    FormControl
-  },
   data () {
     return {
-      html: '',
+      app: {},
       list: [],
       isReady: false
     }
   },
   created () {
-    setTimeout(() => {
-      this.list = API_LIST.list
-      this.html = API_LIST.RuntimeContent
+    this.getData()
+  },
+  methods: {
+    // 获取数据
+    async getData() {
+      const list = await API_LIST.getList()
+      this.list = list.list
+      this.app.html = list.template
+      this.app.javascript = list.javascript
+      this.app.style = list.style
       this.loadStyle()
       this.registerComponent()
       this.isReady = true
-    }, 0)
-  },
-  methods: {
+    },
     // 格式化拼接组件
     formatHtml (html) {
       const reg = new RegExp(/<(Form[^<]+)>[^<>]*<\/Form[^<]+>/, 'g')
@@ -58,15 +59,16 @@ export default {
     },
     // 注册异步组件
     registerComponent () {
+      let self = this
       let base = {
         mounted() {
-          (new Function(API_LIST.javascript))()
+          (new Function(self.app.javascript))()
         }
       }
       let options = APP_JAVASCRIPT
       options.template = `
       <div>
-        ${this.formatHtml(this.html)}
+        ${this.formatHtml(this.app.html)}
         ${APP_HTML}
       </div>`
       registerAsyncComponent({
@@ -78,7 +80,7 @@ export default {
     // 加载组件样式
     loadStyle () {
       loadStyle({
-        style: API_LIST.style
+        style: this.app.style
       })
     }
   },

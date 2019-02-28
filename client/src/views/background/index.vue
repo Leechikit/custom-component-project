@@ -65,32 +65,33 @@ export default {
     }
   },
   mounted () {
-    this.getDatas()
+    this.getData()
     // this.monacoJsEditor.dispose();//使用完成销毁实例
   },
   methods: {
-    async getDatas () {
+    async getData () {
       const codes = await API_CODE.getCodes()
       this.appCodes = codes.app
       this.controlsCodes = codes.controls
     },
     changeCodes (obj, controlkey) {
-      this.getDatas()
+      this.getData()
       this.controlkey = controlkey
       this.$refs.html.setValue(obj.html)
       this.$refs.css.setValue(obj.style)
       this.$refs.javascript.setValue(obj.javascript)
     },
     async htmlSubmit (value) {
-      this.getDatas()
+      this.getData()
       const result = await API_CODE.save({
         type: 'html',
-        codes: value
+        codes: value,
+        controlkey: this.controlkey === 'app' ? null : this.controlkey
       })
       console.log(result)
     },
     async cssSubmit (value) {
-      this.getDatas()
+      this.getData()
       const result = await API_CODE.save({
         type: 'css',
         codes: value,
@@ -99,10 +100,11 @@ export default {
       console.log(result)
     },
     async javascriptSubmit (value) {
-      this.getDatas()
+      this.getData()
       const result = await API_CODE.save({
         type: 'javascript',
-        codes: value
+        codes: value,
+        controlkey: this.controlkey === 'app' ? null : this.controlkey
       })
       console.log(result)
     }

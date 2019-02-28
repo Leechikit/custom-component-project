@@ -6,7 +6,7 @@ const babelConfig = {
     "env"
   ]
 }
-let list = {
+let codesData = {
   app: {
     html: `
   <div class="banner">这是一个测试</div>
@@ -78,8 +78,8 @@ let list = {
   }]
 }
 
-let store = {
-  RuntimeContent: `
+let list = {
+  template: `
     <div class="banner">这是一个测试</div>
     <FormTextBox></FormTextBox>
     <FormMoney></FormMoney>
@@ -207,21 +207,27 @@ router.post('/save', async (ctx, next) => {
       code: 0,
       result: ''
     }
-    let options
+    let codesOptions
+    let listOptions
     if(controlkey) {
-      options = _.find(list.controls, {controlkey})
+      codesOptions = _.find(codesData.controls, {controlkey})
+      listOptions = _.find(list.list, {controlkey})
     }else {
-      options = list.app
+      codesOptions = codesData.app
+      listOptions = list
     }
     if (type === 'javascript') {
-      options.javascript = codes
+      codesOptions.javascript = codes
       const obj = babel.transform(codes, babelConfig)
+      listOptions.customDatas.javascript = obj.code
       result.code = obj.code
     } else if(type === 'css'){
-      options.style = codes
+      codesOptions.style = codes
+      listOptions.customDatas.style = codes
       result.code = codes
     } else if(type === 'html'){
-      options.html = codes
+      codesOptions.html = codes
+      listOptions.customDatas.template = codes
       result.code = codes
     }
     ctx.response.body = result
@@ -231,8 +237,10 @@ router.post('/save', async (ctx, next) => {
 })
 
 router.post('/getCodes', async (ctx, next) => {
-
-  ctx.response.body = list
+  ctx.response.body = codesData
 })
 
+router.post('/getList', async (ctx, next) => {
+  ctx.response.body = list
+})
 module.exports = router
