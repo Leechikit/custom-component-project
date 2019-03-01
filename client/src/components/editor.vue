@@ -41,6 +41,7 @@ export default {
   },
   data () {
     return {
+      monacoEditor: null,
       editorOptions: {
         selectOnLineNumbers: true,
         roundedSelection: false,
@@ -59,6 +60,9 @@ export default {
   },
   mounted () {
     this.initEditor()
+  },
+  destroyed() {
+    this.monacoEditor.dispose()
   },
   methods: {
     initEditor () {

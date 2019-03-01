@@ -66,7 +66,6 @@ export default {
   },
   mounted () {
     this.getData()
-    // this.monacoJsEditor.dispose();//使用完成销毁实例
   },
   methods: {
     async getData () {
