@@ -3,20 +3,36 @@
     <div class="sidebar">
       <el-button
         type="primary"
-        :disabled = "controlkey === 'app'"
-        @click="changeCodes(appCodes,'app')"
+        :disabled="controlkey === 'app'"
+        @click="changeControl(appCodes,'app')"
       >表单设置</el-button>
       <p class="title">自定义控件</p>
       <el-button
         type="primary"
         v-for="(control, $index) in controlsCodes"
         :key="$index"
-        :disabled = "controlkey === control.controlkey"
-        @click="changeCodes(control,control.controlkey)"
+        :disabled="controlkey === control.controlkey"
+        @click="changeControl(control,control.controlkey)"
       >{{control.displayname}}</el-button>
     </div>
     <div class="content">
-      <div class="box">
+      <el-tabs
+        type="card"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          v-for="(item, $index) in editorType"
+          :key="$index"
+          :label="item.toUpperCase()"
+        >
+          <editor
+            :ref="item"
+            :language="item"
+            @change="codeChange"
+          ></editor>
+        </el-tab-pane>
+      </el-tabs>
+      <!-- <div class="box">
         <editor
           ref="html"
           language="html"
@@ -42,7 +58,7 @@
           title="JAVASCRIPT"
           @submit="javascriptSubmit"
         ></editor>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -56,16 +72,27 @@ export default {
   components: { editor },
   data () {
     return {
-      htmlCode: '',
-      cssCode: '',
-      javascriptCode: '',
       controlkey: null,
       appCodes: {},
-      controlsCodes: []
+      controlsCodes: [],
+      editorType: ['html', 'css', 'javascript'],
+      editorCode: {
+        html: '',
+        css: '',
+        javascript: ''
+      },
+      currTabIndex: 0
     }
   },
-  mounted () {
-    this.getData()
+  computed: {
+    currEditorType () {
+      return this.editorType[this.currTabIndex]
+    }
+  },
+  async mounted () {
+    await this.getData()
+    this.$refs[this.currEditorType][0].initEditor()
+    this.$refs[this.currEditorType][0].setValue('')
   },
   methods: {
     async getData () {
@@ -73,12 +100,25 @@ export default {
       this.appCodes = codes.app
       this.controlsCodes = codes.controls
     },
-    changeCodes (obj, controlkey) {
+    changeControl (obj, controlkey) {
       this.getData()
       this.controlkey = controlkey
-      this.$refs.html.setValue(obj.html)
-      this.$refs.css.setValue(obj.style)
-      this.$refs.javascript.setValue(obj.javascript)
+      this.editorCode.html = obj.html || ''
+      this.editorCode.css = obj.style || ''
+      this.editorCode.javascript = obj.javascript || ''
+
+      this.$refs[this.currEditorType][0].setValue(this.editorCode[this.currEditorType])
+    },
+    handleClick (tab, event) {
+      this.currTabIndex = tab.index
+      const editor = this.$refs[this.currEditorType][0]
+      setTimeout(() => {
+        editor.initEditor()
+        editor.setValue(this.editorCode[this.currEditorType])
+      }, 0)
+    },
+    codeChange ({ type, value }) {
+      this.editorCode[type] = value
     },
     async htmlSubmit (value) {
       this.getData()
@@ -125,12 +165,13 @@ export default {
   }
   .content {
     flex-grow: 1;
-    display: flex;
-    .box {
-      flex-basis: 0%;
-      flex-grow: 1;
-      margin: 0 5px;
-    }
+    padding: 0 50px;
+    // display: flex;
+    // .box {
+    //   flex-basis: 0%;
+    //   flex-grow: 1;
+    //   margin: 0 5px;
+    // }
   }
 }
 </style>

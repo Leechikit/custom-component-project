@@ -1,16 +1,5 @@
 <template>
   <div class="editor">
-    <div class="title">
-      <span
-        class="mark"
-        v-text="title"
-      ></span>
-      <el-button
-        type="primary"
-        size="small"
-        @click="submit()"
-      >保存</el-button>
-    </div>
     <div ref="container"></div>
   </div>
 </template>
@@ -59,14 +48,14 @@ export default {
     }
   },
   mounted () {
-    this.initEditor()
+    // this.initEditor()
   },
-  destroyed() {
+  destroyed () {
     this.monacoEditor.dispose()
   },
   methods: {
     initEditor () {
-      this.$refs.container.innerHTML = '';
+      this.$refs.container.innerHTML = ''
       this.monacoEditor = monaco.editor.create(this.$refs.container, {
         value: this.codesCopy || this.codes,
         language: this.language,
@@ -75,8 +64,14 @@ export default {
       })
       //编辑器内容changge事件
       this.monacoEditor.onDidChangeModelContent(event => {
-        this.codesCopy = this.monacoEditor.getValue();
-      });
+        if (this.codesCopy !== this.monacoEditor.getValue()) {
+          this.codesCopy = this.monacoEditor.getValue()
+          this.$emit('change', {
+            type: this.language,
+            value: this.monacoEditor.getValue()
+          })
+        }
+      })
       //编辑器随窗口自适应
       window.addEventListener('resize', () => {
         this.initEditor();
@@ -84,9 +79,6 @@ export default {
     },
     setValue (value) {
       this.monacoEditor.setValue(value)
-    },
-    submit () {
-      this.$emit('submit', this.monacoEditor.getValue())
     }
   },
 }
@@ -94,7 +86,7 @@ export default {
 <style lang="scss" scoped>
 .editor {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   .title {
