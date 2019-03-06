@@ -32,33 +32,9 @@
           ></editor>
         </el-tab-pane>
       </el-tabs>
-      <!-- <div class="box">
-        <editor
-          ref="html"
-          language="html"
-          :codes="htmlCode"
-          title="HTML"
-          @submit="htmlSubmit"
-        ></editor>
+      <div class="submit-btn">
+        <el-button type="primary" @click="submit">提交</el-button>
       </div>
-      <div class="box">
-        <editor
-          ref="css"
-          language="css"
-          :codes="cssCode"
-          title="CSS"
-          @submit="cssSubmit"
-        ></editor>
-      </div>
-      <div class="box">
-        <editor
-          ref="javascript"
-          language="javascript"
-          :codes="javascriptCode"
-          title="JAVASCRIPT"
-          @submit="javascriptSubmit"
-        ></editor>
-      </div> -->
     </div>
   </div>
 </template>
@@ -120,29 +96,9 @@ export default {
     codeChange ({ type, value }) {
       this.editorCode[type] = value
     },
-    async htmlSubmit (value) {
-      this.getData()
+    async submit () {
       const result = await API_CODE.save({
-        type: 'html',
-        codes: value,
-        controlkey: this.controlkey === 'app' ? null : this.controlkey
-      })
-      console.log(result)
-    },
-    async cssSubmit (value) {
-      this.getData()
-      const result = await API_CODE.save({
-        type: 'css',
-        codes: value,
-        controlkey: this.controlkey === 'app' ? null : this.controlkey
-      })
-      console.log(result)
-    },
-    async javascriptSubmit (value) {
-      this.getData()
-      const result = await API_CODE.save({
-        type: 'javascript',
-        codes: value,
+        codes: this.editorCode,
         controlkey: this.controlkey === 'app' ? null : this.controlkey
       })
       console.log(result)
@@ -164,14 +120,14 @@ export default {
     }
   }
   .content {
+    position: relative;
     flex-grow: 1;
     padding: 0 50px;
-    // display: flex;
-    // .box {
-    //   flex-basis: 0%;
-    //   flex-grow: 1;
-    //   margin: 0 5px;
-    // }
+    .submit-btn {
+      position: absolute;
+      right: 50px;
+      top: 0;
+    }
   }
 }
 </style>

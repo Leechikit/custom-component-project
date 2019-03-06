@@ -199,36 +199,34 @@ let list = {
 router.prefix('/custom')
 
 router.post('/save', async (ctx, next) => {
-  const type = ctx.request.body.type
   const codes = ctx.request.body.codes
   const controlkey = ctx.request.body.controlkey
-  if (type && codes) {
+  if (typeof codes === 'object') {
     let result = {
       code: 0,
-      result: ''
+      msg: ''
     }
     let codesOptions
     let listOptions
     if(controlkey) {
       codesOptions = _.find(codesData.controls, {controlkey})
-      listOptions = _.find(list.list, {controlkey})
+      listOptions = _.find(list.list, {controlkey}).customDatas
     }else {
       codesOptions = codesData.app
       listOptions = list
     }
-    if (type === 'javascript') {
-      codesOptions.javascript = codes
-      const obj = babel.transform(codes, babelConfig)
-      listOptions.customDatas.javascript = obj.code
-      result.code = obj.code
-    } else if(type === 'css'){
-      codesOptions.style = codes
-      listOptions.customDatas.style = codes
-      result.code = codes
-    } else if(type === 'html'){
-      codesOptions.html = codes
-      listOptions.customDatas.template = codes
-      result.code = codes
+    for(key in codes) {
+      if (key === 'javascript') {
+        codesOptions.javascript = codes[key]
+        const obj = babel.transform(codes[key], babelConfig)
+        listOptions.javascript = obj.code
+      } else if(key === 'css'){
+        codesOptions.style = codes[key]
+        listOptions.style = codes[key]
+      } else if(key === 'html'){
+        codesOptions.html = codes[key]
+        listOptions.template = codes[key]
+      }
     }
     ctx.response.body = result
   } else {

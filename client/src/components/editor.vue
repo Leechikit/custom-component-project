@@ -12,19 +12,13 @@ export default {
     codes: {
       type: String,
       default () {
-        return '<div>请编辑html内容</div>'
+        return ''
       }
     },
     language: {
       type: String,
       default () {
         return 'html'
-      }
-    },
-    title: {
-      type: String,
-      default () {
-        return '标题'
       }
     }
   },
@@ -43,7 +37,7 @@ export default {
         autoIndent: true, //自动布局
         //quickSuggestionsDelay: 500,   //代码提示延时
       },
-      theme: "vs", //vs, hc-black, or vs-dark
+      theme: "vs-dark", //vs, hc-black, or vs-dark
       codesCopy: null, //内容备份
     }
   },
@@ -86,7 +80,7 @@ export default {
 <style lang="scss" scoped>
 .editor {
   width: 100%;
-  height: 100vh;
+  height: 70vh;
   display: flex;
   flex-direction: column;
   .title {
