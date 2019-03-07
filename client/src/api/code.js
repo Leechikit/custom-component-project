@@ -4,7 +4,10 @@ export default {
   save ({ type, codes, controlkey }) {
     return fetch('/save', { type, codes, controlkey })
   },
-  getCodes() {
+  add ({ name, controlkey }) {
+    return fetch('/add', { name, controlkey })
+  },
+  getCodes () {
     return fetch('/getCodes')
   }
 }

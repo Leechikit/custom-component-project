@@ -7,13 +7,65 @@
         @click="changeControl(appCodes,'app')"
       >表单设置</el-button>
       <p class="title">自定义控件</p>
-      <el-button
-        type="primary"
+      <div
         v-for="(control, $index) in controlsCodes"
         :key="$index"
-        :disabled="controlkey === control.controlkey"
-        @click="changeControl(control,control.controlkey)"
-      >{{control.displayname}}</el-button>
+      >
+        <el-button
+          type="primary"
+          :disabled="controlkey === control.controlkey"
+          @click="changeControl(control,control.controlkey)"
+        >{{control.displayname}}</el-button>
+      </div>
+      <div>
+        <el-popover
+          placement="right"
+          width="400"
+          trigger="click"
+          v-model="isPopup"
+        >
+          <el-form
+            :model="ruleForm"
+            status-icon
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item
+              label="控件KEY"
+              prop="controlkey"
+            >
+              <el-input
+                type="password"
+                v-model="ruleForm.controlkey"
+                autocomplete="off"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="显示名称"
+              prop="displayname"
+            >
+              <el-input
+                type="password"
+                v-model="ruleForm.displayname"
+                autocomplete="off"
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                type="primary"
+                @click="submitForm()"
+              >提交</el-button>
+            </el-form-item>
+          </el-form>
+          <el-button
+            plain
+            icon="el-icon-plus"
+            slot="reference"
+          >新增控件</el-button>
+        </el-popover>
+      </div>
     </div>
     <div class="content">
       <el-tabs
@@ -60,7 +112,13 @@ export default {
         css: '',
         javascript: ''
       },
-      currTabIndex: 0
+      currTabIndex: 0,
+      isPopup: false,
+      ruleForm: {
+        controlkey: '',
+        displayname: ''
+      },
+      rules: {}
     }
   },
   computed: {
@@ -117,6 +175,16 @@ export default {
           type: 'error'
         })
       }
+    },
+    async submitForm () {
+      const result = await API_CODE.add({
+        name: this.ruleForm.displayname,
+        controlkey: this.ruleForm.controlkey
+      })
+      if (+result.code === 0) {
+        this.getData()
+      }
+      this.isPopup = false
     }
   }
 }

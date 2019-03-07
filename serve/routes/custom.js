@@ -208,26 +208,64 @@ router.post('/save', async (ctx, next) => {
     }
     let codesOptions
     let listOptions
-    if(controlkey) {
-      codesOptions = _.find(codesData.controls, {controlkey})
-      listOptions = _.find(list.list, {controlkey}).customDatas
-    }else {
+    if (controlkey) {
+      codesOptions = _.find(codesData.controls, { controlkey })
+      listOptions = _.find(list.list, { controlkey }).customDatas
+    } else {
       codesOptions = codesData.app
       listOptions = list
     }
-    for(key in codes) {
+    for (key in codes) {
       if (key === 'javascript') {
         codesOptions.javascript = codes[key]
         const obj = babel.transform(codes[key], babelConfig)
         listOptions.javascript = obj.code
-      } else if(key === 'css'){
+      } else if (key === 'css') {
         codesOptions.style = codes[key]
         listOptions.style = codes[key]
-      } else if(key === 'html'){
+      } else if (key === 'html') {
         codesOptions.html = codes[key]
         listOptions.template = codes[key]
       }
     }
+    ctx.response.body = result
+  } else {
+    ctx.response.body = { code: -1, msg: '缺少参数' }
+  }
+})
+
+router.post('/add', async (ctx, next) => {
+  const controlkey = ctx.request.body.controlkey
+  const name = ctx.request.body.name
+  if (controlkey && name) {
+    let result = {
+      code: 0,
+      msg: ''
+    }
+    const randomNum = Math.random().toFixed(7).split('.')[1]
+    const control = {
+      isCustom: true,
+      controlkey: controlkey,
+      "Type": 14,
+      "Visible": true,
+      "Editable": true,
+      "Required": false,
+      "Value": null,
+      "displayname": name,
+      "DataDictItemValue": null,
+      "DisplayRuleFields": null,
+      "DisplayRule": null,
+      "IsUser": null,
+      "unitSelectionRange": "",
+      "datafield": 'F' + randomNum,
+      "customDatas": {
+        "template": '',
+        "javascript": '',
+        "style": ''
+      }
+    }
+    codesData.controls.push(control)
+    list.list.push(control)
     ctx.response.body = result
   } else {
     ctx.response.body = { code: -1, msg: '缺少参数' }
