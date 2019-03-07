@@ -45,7 +45,9 @@ export default {
     // this.initEditor()
   },
   destroyed () {
-    this.monacoEditor.dispose()
+    if(this.monacoEditor) {
+      this.monacoEditor.dispose()
+    }
   },
   methods: {
     initEditor () {

@@ -32,8 +32,11 @@
           ></editor>
         </el-tab-pane>
       </el-tabs>
-      <div class="submit-btn">
-        <el-button type="primary" @click="submit">提交</el-button>
+      <div class="save-btn">
+        <el-button
+          type="primary"
+          @click="save"
+        >保存</el-button>
       </div>
     </div>
   </div>
@@ -96,12 +99,24 @@ export default {
     codeChange ({ type, value }) {
       this.editorCode[type] = value
     },
-    async submit () {
+    async save () {
       const result = await API_CODE.save({
         codes: this.editorCode,
         controlkey: this.controlkey === 'app' ? null : this.controlkey
       })
-      console.log(result)
+      if (+result.code === 0) {
+        this.$message({
+          showClose: true,
+          message: '保存成功',
+          type: 'success'
+        })
+      } else {
+        this.$message({
+          showClose: true,
+          message: result.msg || '保存失败',
+          type: 'error'
+        })
+      }
     }
   }
 }
@@ -123,7 +138,7 @@ export default {
     position: relative;
     flex-grow: 1;
     padding: 0 50px;
-    .submit-btn {
+    .save-btn {
       position: absolute;
       right: 50px;
       top: 0;
