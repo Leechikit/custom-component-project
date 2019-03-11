@@ -1,71 +1,59 @@
 <template>
   <div class="container">
     <div class="sidebar">
-      <el-button
-        type="primary"
+      <controlButton
         :disabled="controlkey === 'app'"
         @click="changeControl(appCodes,'app')"
-      >表单设置</el-button>
+      >表单设置</controlButton>
       <p class="title">自定义控件</p>
-      <div
+      <controlButton
         v-for="(control, $index) in controlsCodes"
         :key="$index"
+        :disabled="controlkey === control.controlkey"
+        @click="changeControl(control,control.controlkey)"
+      >{{control.displayname}}</controlButton>
+      <el-popover
+        placement="right"
+        width="400"
+        trigger="click"
+        v-model="isPopup"
       >
-        <el-button
-          type="primary"
-          :disabled="controlkey === control.controlkey"
-          @click="changeControl(control,control.controlkey)"
-        >{{control.displayname}}</el-button>
-      </div>
-      <div>
-        <el-popover
-          placement="right"
-          width="400"
-          trigger="click"
-          v-model="isPopup"
+        <el-form
+          :model="ruleForm"
+          status-icon
+          ref="ruleForm"
+          label-width="100px"
+          class="demo-ruleForm"
         >
-          <el-form
-            :model="ruleForm"
-            status-icon
-            :rules="rules"
-            ref="ruleForm"
-            label-width="100px"
-            class="demo-ruleForm"
+          <el-form-item
+            label="控件KEY"
+            prop="controlkey"
           >
-            <el-form-item
-              label="控件KEY"
-              prop="controlkey"
-            >
-              <el-input
-                type="password"
-                v-model="ruleForm.controlkey"
-                autocomplete="off"
-              ></el-input>
-            </el-form-item>
-            <el-form-item
-              label="显示名称"
-              prop="displayname"
-            >
-              <el-input
-                type="password"
-                v-model="ruleForm.displayname"
-                autocomplete="off"
-              ></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button
-                type="primary"
-                @click="submitForm()"
-              >提交</el-button>
-            </el-form-item>
-          </el-form>
-          <el-button
-            plain
-            icon="el-icon-plus"
-            slot="reference"
-          >新增控件</el-button>
-        </el-popover>
-      </div>
+            <el-input
+              type="text"
+              v-model="ruleForm.controlkey"
+              autocomplete="off"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="显示名称"
+            prop="displayname"
+          >
+            <el-input
+              type="text"
+              v-model="ruleForm.displayname"
+              autocomplete="off"
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              @click="submitForm()"
+            >提交</el-button>
+          </el-form-item>
+        </el-form>
+        <controlButton slot="reference" borderStyle="dotted"><i class="el-icon-plus"></i> 新增控件</controlButton>
+      </el-popover>
     </div>
     <div class="content">
       <el-tabs
@@ -96,11 +84,12 @@
 <script>
 import * as monaco from 'monaco-editor'
 import editor from '@/components/editor.vue'
+import controlButton from '@/components/controlButton.vue'
 import API_CODE from '@/api/code.js'
 
 export default {
   name: 'background',
-  components: { editor },
+  components: { editor, controlButton },
   data () {
     return {
       controlkey: null,
@@ -130,6 +119,7 @@ export default {
     await this.getData()
     this.$refs[this.currEditorType][0].initEditor()
     this.$refs[this.currEditorType][0].setValue('')
+    this.resetEditor(this.appCodes, 'app')
   },
   methods: {
     async getData () {
@@ -139,6 +129,9 @@ export default {
     },
     changeControl (obj, controlkey) {
       this.getData()
+      this.resetEditor(obj, controlkey)
+    },
+    resetEditor (obj, controlkey) {
       this.controlkey = controlkey
       this.editorCode.html = obj.html || ''
       this.editorCode.css = obj.style || ''
@@ -182,7 +175,9 @@ export default {
         controlkey: this.ruleForm.controlkey
       })
       if (+result.code === 0) {
-        this.getData()
+        await this.getData()
+        const control = this.controlsCodes[this.controlsCodes.length - 1]
+        this.resetEditor(control, this.ruleForm.controlkey)
       }
       this.isPopup = false
     }
