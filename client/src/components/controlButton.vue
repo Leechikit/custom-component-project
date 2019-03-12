@@ -2,15 +2,26 @@
   <div
     class="controlButton"
     @click="clickHandle()"
-    :style="{borderStyle: borderStyle}"
   >
-    <slot></slot>
+    <div class="left">
+      <slot></slot>
+    </div>
+    <div class="right" v-if="setable">
+      <i
+        class="el-icon-setting"
+        @click.stop="modifyHandle()"
+      ></i>
+      <i
+        class="el-icon-delete"
+        @click.stop="deleteHandle()"
+      ></i>
+    </div>
   </div>
 </template>
 <script>
 export default {
   name: 'controlButton',
-  props: ['borderStyle'],
+  props: ['setable'],
   data () {
     return {
     }
@@ -18,30 +29,46 @@ export default {
   methods: {
     clickHandle () {
       this.$emit('click')
+    },
+    modifyHandle () {
+      this.$emit('modify')
+    },
+    deleteHandle () {
+      this.$emit('delete')
     }
   },
 }
 </script>
 <style lang="scss" scoped>
 .controlButton {
-  width: 100px;
-  height: 30px;
-  line-height: 30px;
-  margin: 5px 0;
-  padding: 0 5px 0 10px;
-  background-color: #f1f1f1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  padding-left: 10px;
   border-radius: 3px;
-  color: #333;
+  color: #444;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 14px;
-  border-width: 1px;
-  border-color: #333;
+  font-weight: 400;
   cursor: pointer;
+  .right {
+    display: none;
+    flex-shrink: 0;
+    &>i {
+      width: 20px;
+    }
+  }
   &:hover {
-    color: #fff;
-    background-color: #409eff;
+    color: #409eff;
+    border-color: #409eff;
+    .right {
+      display: block;
+    }
   }
   &[disabled] {
     color: #fff;

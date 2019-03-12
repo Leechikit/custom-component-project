@@ -69,9 +69,9 @@ export default {
         }
       })
       //编辑器随窗口自适应
-      window.addEventListener('resize', () => {
-        this.initEditor();
-      })
+      // window.addEventListener('resize', () => {
+      //   this.initEditor();
+      // })
     },
     setValue (value) {
       this.monacoEditor.setValue(value)

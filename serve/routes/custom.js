@@ -41,37 +41,34 @@ let codesData = {
   .FormMoney input{
     border: none;
   }`,
-    javascript: `
-  function func(){
-    return {
-      mounted () {
-        if(this.currentValue) {
+    javascript: `{
+    mounted () {
+      if(this.currentValue) {
+        this.setValue(this.currentValue)
+      }
+      this.$emit('getValue', this.getValue)
+    },
+    methods:{
+      onBlur () {
+        if (this.currentValue !== null && this.currentValue !== void 0) {
           this.setValue(this.currentValue)
         }
-        this.$emit('getValue', this.getValue)
       },
-      methods:{
-        onBlur () {
-          if (this.currentValue !== null && this.currentValue !== void 0) {
-            this.setValue(this.currentValue)
-          }
-        },
-        onFocus () {
-          let $input = this.$refs.control
-          if ($input && this.currentValue !== null && this.currentValue !== void 0) {
-            $input.value = this.currentValue
-          }
-        },
-        setValue (value) {
-          let formatedNumber = '￥' + this.currentValue
-          this.$nextTick(() => {
-            let $input = this.$refs.control
-            if ($input) {
-              $input.value = formatedNumber
-              this.$emit('input', this.currentValue)
-            }
-          })
+      onFocus () {
+        let $input = this.$refs.control
+        if ($input && this.currentValue !== null && this.currentValue !== void 0) {
+          $input.value = this.currentValue
         }
+      },
+      setValue (value) {
+        let formatedNumber = '￥' + this.currentValue
+        this.$nextTick(() => {
+          let $input = this.$refs.control
+          if ($input) {
+            $input.value = formatedNumber
+            this.$emit('input', this.currentValue)
+          }
+        })
       }
     }
   }`
@@ -218,7 +215,7 @@ router.post('/save', async (ctx, next) => {
     for (key in codes) {
       if (key === 'javascript') {
         codesOptions.javascript = codes[key]
-        const obj = babel.transform(codes[key], babelConfig)
+        const obj = babel.transform(`function func(){return ${codes[key]}}`, babelConfig)
         listOptions.javascript = obj.code
       } else if (key === 'css') {
         codesOptions.style = codes[key]
@@ -236,36 +233,81 @@ router.post('/save', async (ctx, next) => {
 
 router.post('/add', async (ctx, next) => {
   const controlkey = ctx.request.body.controlkey
-  const name = ctx.request.body.name
-  if (controlkey && name) {
+  const displayname = ctx.request.body.displayname
+  if (controlkey && displayname) {
     let result = {
       code: 0,
       msg: ''
     }
-    const randomNum = Math.random().toFixed(7).split('.')[1]
-    const control = {
-      isCustom: true,
-      controlkey: controlkey,
-      "Type": 14,
-      "Visible": true,
-      "Editable": true,
-      "Required": false,
-      "Value": null,
-      "displayname": name,
-      "DataDictItemValue": null,
-      "DisplayRuleFields": null,
-      "DisplayRule": null,
-      "IsUser": null,
-      "unitSelectionRange": "",
-      "datafield": 'F' + randomNum,
-      "customDatas": {
-        "template": '',
-        "javascript": '',
-        "style": ''
+    const codesOptions = _.find(codesData.controls, { controlkey })
+    if (codesOptions) {
+      result = {
+        code: 1,
+        msg: '控件KEY已存在'
       }
+    } else {
+      const randomNum = Math.random().toFixed(7).split('.')[1]
+      const control = {
+        isCustom: true,
+        controlkey: controlkey,
+        "Type": 14,
+        "Visible": true,
+        "Editable": true,
+        "Required": false,
+        "Value": null,
+        "displayname": displayname,
+        "DataDictItemValue": null,
+        "DisplayRuleFields": null,
+        "DisplayRule": null,
+        "IsUser": null,
+        "unitSelectionRange": "",
+        "datafield": 'F' + randomNum,
+        "customDatas": {
+          "template": '',
+          "javascript": '',
+          "style": ''
+        }
+      }
+      codesData.controls.push(control)
+      list.list.push(control)
     }
-    codesData.controls.push(control)
-    list.list.push(control)
+    ctx.response.body = result
+  } else {
+    ctx.response.body = { code: -1, msg: '缺少参数' }
+  }
+})
+
+router.post('/modify', async (ctx, next) => {
+  const controlkey = ctx.request.body.controlkey
+  const displayname = ctx.request.body.displayname
+  if (controlkey && displayname) {
+    let result = {
+      code: 0,
+      msg: ''
+    }
+    codesOptions = _.find(codesData.controls, { controlkey })
+    listOptions = _.find(list.list, { controlkey })
+    codesOptions.displayname = displayname
+    listOptions.displayname = displayname
+    ctx.response.body = result
+  } else {
+    ctx.response.body = { code: -1, msg: '缺少参数' }
+  }
+})
+
+router.post('/delete', async (ctx, next) => {
+  const controlkey = ctx.request.body.controlkey
+  if (controlkey) {
+    let result = {
+      code: 0,
+      msg: ''
+    }
+    _.remove(codesData.controls, control => {
+      return control.controlkey === controlkey
+    })
+    _.remove(list.list, control => {
+      return control.controlkey === controlkey
+    })
     ctx.response.body = result
   } else {
     ctx.response.body = { code: -1, msg: '缺少参数' }
