@@ -18,8 +18,8 @@
         :key="$index"
         :disabled="controlkey === control.controlkey"
         @click="changeControl(control,control.controlkey)"
-        @modify="showModifyDialog(control,control.controlkey)"
-        @delete="deleteControl(control.controlkey)"
+        @modify="showModifyDialog(control)"
+        @delete="deleteControl(control)"
         :setable="true"
       >{{control.displayname}}</controlButton>
     </div>
@@ -160,11 +160,11 @@ export default {
       this.appCodes = codes.app
       this.controlsCodes = codes.controls
     },
-    changeControl (obj, controlkey) {
+    changeControl (obj) {
       this.getData()
-      this.resetEditor(obj, controlkey)
+      this.resetEditor(obj)
     },
-    resetEditor (obj, controlkey) {
+    resetEditor (obj, controlkey = obj.controlkey) {
       this.controlkey = controlkey
       this.editorCode.html = obj.html || ''
       this.editorCode.css = obj.style || ''
@@ -210,7 +210,7 @@ export default {
       if (+result.code === 0) {
         await this.getData()
         const control = this.controlsCodes[this.controlsCodes.length - 1]
-        this.resetEditor(control, this.ruleForm.controlkey)
+        this.resetEditor(control)
         this.$message({
           message: '新增控件成功',
           type: 'success'
@@ -220,7 +220,7 @@ export default {
         this.$message({
           message: result.msg || '新增控件失败',
           type: 'error'
-        });
+        })
       }
     },
     showAddDialog () {
@@ -249,20 +249,49 @@ export default {
         controlkey: this.ruleForm.controlkey
       })
       if (+result.code === 0) {
-        await this.getData()
+        this.getData()
+        this.$message({
+          message: '修改控件成功',
+          type: 'success'
+        })
+        this.modifyDialogVisible = false
+      } else {
+        this.$message({
+          message: result.msg || '修改控件失败',
+          type: 'error'
+        })
       }
-      this.modifyDialogVisible = false
     },
     async deleteControl (control) {
-      const result = await API_CODE.delete({
-        controlkey: this.ruleForm.controlkey
-      })
-      if (+result.code === 0) {
-        await this.getData()
-        if (this.controlkey === control.controlkey) {
-          this.resetEditor(this.appCodes, 'app')
+      this.$confirm(`此操作将永久删除 ${control.displayname} 控件, 是否继续?`, '删除控件', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        const result = await API_CODE.delete({
+          controlkey: this.ruleForm.controlkey
+        })
+        if (+result.code === 0) {
+          await this.getData()
+          if (this.controlkey === control.controlkey) {
+            this.resetEditor(this.appCodes, 'app')
+          }
+          this.$message({
+            type: 'success',
+            message: '删除控件成功'
+          })
+        } else {
+          this.$message({
+            message: result.msg || '删除控件失败',
+            type: 'error'
+          })
         }
-      }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }

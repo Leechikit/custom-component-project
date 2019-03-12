@@ -1,12 +1,16 @@
 <template>
   <div
     class="controlButton"
+    :class="{'s-disabled': disabled}"
     @click="clickHandle()"
   >
     <div class="left">
       <slot></slot>
     </div>
-    <div class="right" v-if="setable">
+    <div
+      class="right"
+      v-if="setable"
+    >
       <i
         class="el-icon-setting"
         @click.stop="modifyHandle()"
@@ -21,14 +25,16 @@
 <script>
 export default {
   name: 'controlButton',
-  props: ['setable'],
+  props: ['setable', 'disabled'],
   data () {
     return {
     }
   },
   methods: {
     clickHandle () {
-      this.$emit('click')
+      if (this.disabled === false) {
+        this.$emit('click')
+      }
     },
     modifyHandle () {
       this.$emit('modify')
@@ -59,7 +65,7 @@ export default {
   .right {
     display: none;
     flex-shrink: 0;
-    &>i {
+    & > i {
       width: 20px;
     }
   }
@@ -70,10 +76,9 @@ export default {
       display: block;
     }
   }
-  &[disabled] {
+  &.s-disabled {
     color: #fff;
     background-color: #409eff;
-    pointer-events: none;
   }
 }
 </style>
